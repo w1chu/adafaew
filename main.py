@@ -1,7 +1,7 @@
 import random
 
 class Human:
-    def __init__(self, name="Human", job=None, home=None, car=None):
+    def __init__(self, name="Human", job=None, home=None, car=None, mess=None, shopping=None):
         self.name = name
         self.job = job
         self.home = home
@@ -9,6 +9,8 @@ class Human:
         self.money = 100
         self.gladness = 50
         self.satiety = 50
+        self.mess = 0
+        self.shopping = 0
 
     def get_home(self):
         self.home = House()
@@ -49,13 +51,15 @@ class Human:
             self.satiety -= 4
 
     def to_repair(self):
-        pass
+        self.money -= 50
 
     def chill(self):
-        pass
+        self.gladness += 10
+        self.mess += 5
 
     def clean_home(self):
-        pass
+        self.gladness -= 5
+        self.mess = 0
 
     def day_indexes(self, day):
         day = f"Today the {day} of {self.name}'s life"
@@ -97,7 +101,7 @@ class Human:
         if self.job is None:
             self.get_job()
             print(f"I don't have a job, I'm going to get a job {self.job.job} with salary {self.job.salary}")
-        self.days_indexes(day)
+        self.day_indexes(day)
 
         dice = random.randint(1, 4)
         if self.satiety < 20:
@@ -126,14 +130,36 @@ class Human:
             self.clean_home()
         elif dice == 4:
             print("Time for shopping!")
-            self.shopping(manage="delicates")
+            self.shopping(str(manage="delicates"))
 class Auto:
-    pass
+    def __init__(self, brand_list):
+        self.brand = random.choice(list(brand_list))
+        self.fuel = brand_list[self.brand]['fuel']
+        self.strength = brand_list[self.brand]['strength']
+        self.consumption = brand_list[self.brand]['consumption']
+
+    def drive(self):
+        if self.strength > 0 and self.fuel >= self.consumption:
+            self.strength -= 1
+            self.fuel -= self.consumption
+            return True
+        else:
+            print("the car can't move")
+            return False
+
+    def to_repair(self):
+        self.strength *= 100
+
 class House:
-    pass
+    def __init__(self):
+        self.mess = 0
+        self.food = 0
 
 class Job:
-    pass
+    def __init__(self, job_list):
+        self.job = random.choice(list(job_list))
+        self.salary = job_list[self.job]["salary"]
+        self.gladness_less = job_list[self.job]['gladness_less']
 
 job_list = {
     "Java developer": {"salary": 50, "gladness_less": 10},
